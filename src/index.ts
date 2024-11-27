@@ -24,9 +24,9 @@ import { saveAsCSV } from "./core-clones/utils/save-as-csv";
 import type { HeaderRaw, Sort } from "./core-clones/components/v-table/types";
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
-    id: "tabular-layout-boilerplate",
-    name: "Custom Table",
-    icon: "table_rows",
+    id: "diff-layout",
+    name: "Diff View",
+    icon: "difference",
     component: Layout,
     slots: {
         options: Options,
