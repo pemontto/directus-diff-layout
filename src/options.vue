@@ -26,20 +26,20 @@
 
 <template>
     <div class="field">
-        <div class="type-label">{{ t("layouts.tabular.spacing") }}</div>
+        <div class="type-label">{{ t("layouts.diff.spacing") }}</div>
         <v-select
             v-model="tableSpacingWritable"
             :items="[
                 {
-                    text: t('layouts.tabular.compact'),
+                    text: t('layouts.diff.compact'),
                     value: 'compact',
                 },
                 {
-                    text: t('layouts.tabular.cozy'),
+                    text: t('layouts.diff.cozy'),
                     value: 'cozy',
                 },
                 {
-                    text: t('layouts.tabular.comfortable'),
+                    text: t('layouts.diff.comfortable'),
                     value: 'comfortable',
                 },
             ]"

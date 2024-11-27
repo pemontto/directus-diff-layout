@@ -23,7 +23,7 @@
     // CORE CHANGES
     // import { useSync } from '@directus/composables';
     // import { useCollectionPermissions } from '@/composables/use-permissions';
-    import { useStores, useSync } from "@directus/extensions-sdk";
+    import { useStores, useSync, useItems, useApi } from "@directus/extensions-sdk";
 
     defineOptions({ inheritAttrs: false });
 
@@ -89,7 +89,7 @@
         "update:fields",
     ]);
 
-    const { t } = useI18n();
+    const { t } = useI18n(); // Ensure useI18n is correctly initialized
     const { collection } = toRefs(props);
 
     // CORE CHANGES
@@ -150,6 +150,45 @@
             (field) => field !== fieldKey
         );
     }
+
+    // console.log(loading)
+    // console.log(items)
+
+    const selectedItem1 = ref(null);
+    const selectedItem2 = ref(null);
+    const itemDetails1 = ref<Item | null>(null);
+    const itemDetails2 = ref<Item | null>(null);
+
+    watch(selectedItem1, async (newItemId) => {
+        if (newItemId) {
+            console.log("Item details for selectedItem1:", newItemId);
+            console.log(`Calling useItems for id:'${newItemId}' in collection:'${collection.value}'`)
+            try {
+                itemDetails1.value = await useItems(collection.value, newItemId);
+                console.log("Fetched item details for selectedItem1:", itemDetails1.value);
+            } catch (error) {
+                console.error("Error fetching item details:", error);
+            }
+        } else {
+            itemDetails1.value = null;
+        }
+    });
+
+
+    watch(selectedItem2, async (newItemId) => {
+        if (newItemId) {
+            console.log("Item details for selectedItem2:", newItemId);
+            console.log(`Calling useItems for id:'${newItemId}' in collection:'${collection.value}'`)
+            try {
+                itemDetails2.value = await useItems(collection.value, newItemId);
+                console.log("Fetched item details for selectedItem2:", itemDetails2.value);
+            } catch (error) {
+                console.error("Error fetching item details:", error);
+            }
+        } else {
+            itemDetails2.value = null;
+        }
+    });
 </script>
 
 <template>
@@ -168,12 +207,44 @@
             v-else-if="itemCount === 0"
             name="no-items"
         />
+        <div class="split-pane">
+            <div class="column">
+                <v-select
+                    :items="items"
+                    label="Select Item"
+                    v-model="selectedItem1"
+                    item-text="id"
+                    item-value="id"
+                />
+                <!-- Content for the first column goes here -->
+                <div class="content">
+                    <!-- Placeholder for the first column content -->
+                    <p>Content for the first column</p>
+                </div>
+            </div>
+            <div class="column">
+                <!-- Add dropdown for selecting an item from the filtered Directus collection -->
+                <v-select
+                    :items="items"
+                    label="Select Item"
+                    v-model="selectedItem2"
+                    item-text="id"
+                    item-value="id"
+                />
+                <!-- Content for the second column goes here -->
+                <div class="content">
+                    <!-- Placeholder for the second column content -->
+                    <p>Content for the second column</p>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
-    .custom-layout {
-        display: contents;
+.custom-layout {
+        display: flex;
+        flex-direction: column;
         margin: var(--content-padding);
         margin-bottom: var(--content-padding-bottom);
     }
@@ -234,5 +305,24 @@
 
     .flip {
         transform: scaleY(-1);
+    }
+.split-pane {
+        display: flex;
+        flex-direction: row;
+        gap: 16px; /* Adjust the gap between columns as needed */
+    }
+
+.column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+.content {
+        flex: 1;
+        padding: 16px; /* Adjust the padding as needed */
+        border: 1px solid var(--theme--border);
+        border-radius: 4px;
+        background-color: var(--theme--background);
     }
 </style>
